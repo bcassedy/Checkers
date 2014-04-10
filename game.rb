@@ -1,4 +1,5 @@
 require_relative 'board'
+require_relative 'players'
 
 class Game
 
@@ -82,8 +83,8 @@ class HumanPlayer
   }
 
   def play_turn
-    puts "#{color} pick a move e.x. f2,f4 :"
-    positions = gets.chomp.downcase.split(',')
+    puts "#{color} pick a move e.x. a3,b4 :"
+    positions = gets.chomp.downcase.split(',').map(&:strip)
     check_input(positions)
     positions.map! { |position| translate_coordinate(position) }
     start_pos = positions[0]

@@ -1,8 +1,8 @@
-require 'debugger'
+# encode: utf-8
 
 class Piece
   attr_accessor :pos
-  attr_reader :color, :board
+  attr_reader :color, :board, :king
 
   SLIDES = {
     :black => { :soldier => [ [1, 1], [1, -1] ],
@@ -23,11 +23,11 @@ class Piece
   }
 
 
-  def initialize(board, color, pos)
+  def initialize(board, color, pos, king = false)
     @board = board
     @color = color
     @pos = pos
-    @king = false
+    @king = king
     @board.add_piece(self, pos)
   end
 
@@ -52,24 +52,20 @@ class Piece
   end
 
   def perform_slide(pos)
-    @board.empty?(pos) && move_difs.include?(pos_dif(pos))
+    @board.empty?(pos) && possible_slides.include?(pos_dif(pos))
   end
 
   def perform_jump(pos)
-    return false unless valid_jump?(pos)
     jumped_space = jumped_space(self.pos, pos)
-    unless @board.empty?(jumped_space) || 
-                                @board[jumped_space].color == self.color
-      @board[jumped_space] = nil
-      true
-    else
-      false
-    end
+    return false unless valid_jump?(jumped_space, pos)
+    @board[jumped_space] = nil
+    true
   end
 
-  def valid_jump?(pos)
+  def valid_jump?(jumped_space, pos)
     difference = pos_dif(pos)
-    @board.empty?(pos) && possible_jumps.include?(difference)
+    @board.empty?(pos) && possible_jumps.include?(difference) && 
+        !@board.empty?(jumped_space) && @board[jumped_space].color != self.color
   end
 
   def jumped_space(start_pos, end_pos)
@@ -81,7 +77,7 @@ class Piece
     JUMPS[self.color][self.type]
   end
 
-  def move_difs
+  def possible_slides
     SLIDES[self.color][self.type]
   end
 
@@ -95,7 +91,9 @@ class Piece
   end
 
   def maybe_promote
-    promote if self.pos[0] == promote_row
+    if self.pos[0] == promote_row
+      self.promote 
+    end
   end
 
   def promote
@@ -103,6 +101,6 @@ class Piece
   end
 
   def display_char
-    'O '
+    king? ? "\u26C3" : "\u26C2 "
   end
 end

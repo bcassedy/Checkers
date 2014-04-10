@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'colorize'
 require_relative 'piece.rb'
 
@@ -8,9 +10,7 @@ class Board
   attr_reader :board
   def initialize(board = nil)
     @board = board || Array.new(8) { Array.new(8) }
-    unless board
-      setup_board
-    end
+    setup_board unless board
   end
 
   def [](pos)
@@ -44,7 +44,6 @@ class Board
   end
 
   def perform_moves!(moves)
-    # need to finish this method
     return if moves.count == 1
       start_pos = moves[0]
       end_pos = moves[1]
@@ -60,10 +59,9 @@ class Board
     #Dup the board and the relevant piece
     board_copy = Board.new(dup)
     piece = board_copy[start_pos]
-    new_piece = Piece.new(board_copy, piece.color, piece.pos)
+    new_piece = Piece.new(board_copy, piece.color, piece.pos, piece.king)
     board_copy
   end
-
 
   def dup
     copy = []
@@ -72,8 +70,6 @@ class Board
     end
     copy
   end
-
-
 
   def move(start_pos, end_pos)
     piece = self[start_pos]
