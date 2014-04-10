@@ -47,12 +47,12 @@ class Piece
     color == :black
   end
 
-  def white?
-    color == :white
+  def red?
+    color == :red
   end
 
   def perform_slide(pos)
-    @board[pos].nil? && move_difs.include?(pos_dif(pos))
+    @board.empty?(pos) && move_difs.include?(pos_dif(pos))
   end
 
   def perform_jump(pos)

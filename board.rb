@@ -1,12 +1,16 @@
 require 'colorize'
-require 'debugger'
+require_relative 'piece.rb'
 
 class InvalidMoveError < StandardError
 end
 
 class Board
+  attr_reader :board
   def initialize(board = nil)
     @board = board || Array.new(8) { Array.new(8) }
+    unless board
+      setup_board
+    end
   end
 
   def [](pos)
@@ -25,7 +29,7 @@ class Board
 
   def valid_move_seq?(moves)
     begin
-      start_pos = moves[0][0]
+      start_pos = moves[0]
       board_copy = copy_game_state(start_pos)
       board_copy.perform_moves!(moves)
     rescue InvalidMoveError
@@ -34,12 +38,22 @@ class Board
     true
   end
 
+  def perform_moves(moves)
+    raise InvalidMoveError unless valid_move_seq?(moves)
+    perform_moves!(moves) 
+  end
+
   def perform_moves!(moves)
     # need to finish this method
-    until moves.empty? do
-      start_pos, end_pos = moves.shift
+    return if moves.count == 1
+      start_pos = moves[0]
+      end_pos = moves[1]
       move(start_pos, end_pos)
-    end
+      perform_moves!(moves[1..-1])
+  end
+
+  def won?
+    pieces.all? { |piece| piece.color == pieces[0].color }
   end
 
   def copy_game_state(start_pos)
@@ -87,6 +101,10 @@ class Board
       end
     end
     nil
+  end
+
+  def pieces
+    @board.flatten.compact
   end
 
   def to_s
