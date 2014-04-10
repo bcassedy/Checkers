@@ -10,10 +10,8 @@ class Game
 
   def initialize
     @board = Board.new
-    @player1 = HumanPlayer.new
-    @player1.color, @player1.board = :red, @board
-    @player2 = HumanPlayer.new
-    @player2.color, @player2.board = :black, @board
+    @player1 = HumanPlayer.new(:red, @board)
+    @player2 = HumanPlayer.new(:red, @board)
   end
 
   def play

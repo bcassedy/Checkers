@@ -67,9 +67,10 @@ class ComputerPlayer
   end
 
   def determine_moves
-    board.pieces.
+    board.pieces
 
   end
+end
 
 
 
