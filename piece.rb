@@ -1,5 +1,7 @@
 # encode: utf-8
 
+require 'debugger'
+
 class Piece
   attr_accessor :pos
   attr_reader :color, :board, :king
@@ -60,6 +62,40 @@ class Piece
     return false unless valid_jump?(jumped_space, pos)
     @board[jumped_space] = nil
     true
+  end
+
+  def valid_moves(start_pos)
+    valid_slides(start_pos) + valid_jumps(start_pos)
+  end
+
+  def valid_slides(start_pos)
+    possible_slides.select do |slide| 
+      #debugger
+      end_pos = start_pos.zip(slide).map do |coords|
+        coords.inject(:+)
+      end
+      perform_slide(end_pos) 
+    end
+  end
+
+  def valid_jumps(start_pos)
+    moves = []
+    get_jump_positions.each do |jump_pos|
+      if valid_jump?(jumped_space(self.pos, jump_pos), jump_pos)
+        moves << jump_pos
+      end
+    end
+    moves
+  end
+
+  def get_jump_positions
+    jump_positions = []
+    possible_jumps.each do |jump_dif|
+      jump_positions << self.pos.zip(jump_dif).map do |coords|
+        coords.inject(:+)
+      end
+    end
+    jump_positions
   end
 
   def valid_jump?(jumped_space, pos)
