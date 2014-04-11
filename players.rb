@@ -67,8 +67,11 @@ class ComputerPlayer
   end
 
   def determine_moves
-    board.pieces
-
+    moves = []
+    @my_pieces.each do |piece|
+      moves += piece.valid_moves(piece.pos)
+    end
+    moves
   end
 end
 

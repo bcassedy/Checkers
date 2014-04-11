@@ -69,13 +69,15 @@ class Piece
   end
 
   def valid_slides(start_pos)
-    possible_slides.select do |slide| 
+    end_positions = []
+    possible_slides.each do |slide| 
       #debugger
       end_pos = start_pos.zip(slide).map do |coords|
         coords.inject(:+)
       end
-      perform_slide(end_pos) 
+      end_positions << end_pos if perform_slide(end_pos) 
     end
+    end_positions
   end
 
   def valid_jumps(start_pos)
